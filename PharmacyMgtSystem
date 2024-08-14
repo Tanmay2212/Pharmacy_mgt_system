@@ -1,0 +1,597 @@
+from tkinter import *
+from PIL import Image, ImageTk
+from tkinter import ttk
+import mysql.connector
+from tkinter import messagebox
+
+
+class databaseName_ManagementSystem:
+        def __init__(self, root):
+                self.root = root 
+                self.root.title("databaseName Management System")
+                self.root.geometry("1560x800+0+0")
+        
+        #   ------------variable for databse addmed()------------
+                self.addmed_var=StringVar()
+                self.addref_Var=StringVar()
+
+        # --------------main text variable------------------------
+                self.RefNo_Variable = StringVar()
+                self.companyName_Variable = StringVar()
+                self.TypeMed_Variable = StringVar()
+                self.medName_var = StringVar()
+                self.LotNo_Variable = StringVar()
+                self.IssueDate_Variable = StringVar()
+                self.ExpDate_Variable = StringVar()
+                self.uses_Variable = StringVar()
+                self.SideEffect_Variable = StringVar()
+                self.Warning_Variable = StringVar()
+                self.Dosage_Variable = StringVar()
+                self.Price_Variable = StringVar()
+                self.Quantity_Variable = StringVar()
+
+
+                label_title = Label(self.root, text="databaseName MANAGEMENT SYSTEM", bd=8, relief=RAISED,
+                                bg="#FAFAD2", fg="darkgreen", font=("Arial", 50, "bold"), padx=2, pady=4)
+                label_title.pack(side="top", fill=X)
+
+                
+                #adding first image as button
+                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg"  
+                img1 = Image.open(image_path)
+                img1 = img1.resize((80, 80))
+                self.photoimg1 = ImageTk.PhotoImage(img1)
+                
+                #making image as button
+                button1 = Button(self.root, image=self.photoimg1, borderwidth=0)
+                button1.place(x=70, y=10)
+
+                #making of dataFrame
+                DataFrame = Frame(self.root, bd=15,relief=RIDGE ,padx=20, bg = "#B0E2FF")
+                DataFrame.place(x=0,y=120,width=1540, height=400)
+
+                # medicine information left side column
+                DataFrameLeft = LabelFrame(DataFrame,bd=10,relief=RIDGE,padx=20,text="Medicine Information",
+                                        fg="darkblue",bg= "#F8F8FF",font=("Times New Romanl", 15, "bold"))
+                DataFrameLeft.place(x=0,y=5,width=880, height= 350)
+
+                
+                #Button Frames
+                buttonFrame = Frame(self.root,bd=10,relief=RIDGE,padx=20)
+                buttonFrame.place(x=0,y=520,width=1538, height= 65)
+
+                # main button 
+                buttonAddData = Button(buttonFrame,command=self.add_data,text = "ADD MEDICINE", font=("Arial", 14, "bold"),width=12,
+                                fg = "white",bg= "#007bff", activebackground="#0056b3", activeforeground="white")
+                buttonAddData.grid(row = 0, column = 0, padx=2)
+
+                buttonUpdateData = Button(buttonFrame,text = "UPDATE", font=("Arial", 14, "bold"),width=11,
+                                        fg = "white",bg= "#007bff", activebackground="#0056b3", activeforeground="white", command=self.Update)
+                buttonUpdateData.grid(row = 0, column = 1, padx=2)
+
+                buttonDeleteData = Button(buttonFrame,text = "DELETE", font=("Arial", 14, "bold"),width=11,
+                                        fg = "white",bg= "#dc3545", activebackground="#bd2130", activeforeground="white",command=self.delete)
+                buttonDeleteData.grid(row = 0, column = 2, padx=2)
+
+                buttonResetData = Button(buttonFrame,command=self.reset,text = "RESET", font=("Arial", 14, "bold"),width=11,
+                                        fg = "white",bg= "#007bff", activebackground="#0056b3", activeforeground="white")
+                buttonResetData.grid(row = 0, column = 3, padx=2)
+
+                buttonExitData = Button(buttonFrame,text = "EXIT", font=("Arial", 14, "bold"),width=11,
+                                        fg = "white",bg= "#007bff", activebackground="#0056b3", activeforeground="white")
+                buttonExitData.grid(row = 0, column = 4, padx=2)
+
+                #SEARCH BY BUTTON
+
+                # Search By section
+                labelSearch = Label(buttonFrame, font=("Arial", 17, "bold"), text="Search By:", padx=2, width=10 ,
+                                bg="#dc3545", fg="white")
+                labelSearch.grid(row=0, column=5, padx=2)
+
+                # --------------------Variable--------------
+                self.search_var = StringVar()
+                # -------------------------------------------
+                search_combo = ttk.Combobox(buttonFrame,textvariable=self.search_var, width=13, font=("Arial", 14, "bold"), state="readonly")
+                search_combo["values"] = ("RefNo", "MedName", "LotNo")  # Dropdown menu
+                search_combo.grid(row=0, column=6, padx=2)
+                search_combo.current(0)
+                # --------------------Variable--------------
+                self.searchtxt_var = StringVar()
+                # -------------------------------------------
+                txtsearch = Entry(buttonFrame, textvariable=self.searchtxt_var,bd=2, relief=RIDGE, width=11,font=("Arial", 17, "bold"))
+                txtsearch.grid(row=0, column=7, padx = 2)
+
+                searchBtn = Button(buttonFrame,command=self.search_data,text = "SEARCH",
+                                font=("Arial", 14, "bold"),width= 10, fg = "white",bg= "green", activebackground="#0056b3", activeforeground="white")
+                searchBtn.grid(row = 0, column = 8)
+
+                showAll = Button(buttonFrame,command = self.fetch_data ,text = "SHOW ALL",
+                                font=("Arial", 14, "bold"),width= 10, fg = "white",bg= "green", activebackground="#0056b3", activeforeground="white")
+                showAll.grid(row = 0, column = 9)
+                
+        # ---------------------------- #Labels and Entry-------------------
+                labelRefNo = Label(DataFrameLeft, font=("Arial", 17, "bold"), text="Reference No.", padx=2, width=12 ,
+                                bg="yellow", fg="black")
+                labelRefNo.grid(row=0, column=0)
+
+
+
+        # -------------databse query for refcombobox--------------
+                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                my_cursor = conn.cursor()
+                my_cursor.execute("select ref from pharma")
+                rows = my_cursor.fetchall()
+
+                RefNo_combo = ttk.Combobox(DataFrameLeft, textvariable=self.RefNo_Variable, width=15, font=("Arial", 14, "bold"), state="readonly")
+                RefNo_combo["values"] = rows  # Dropdown menu
+                RefNo_combo.grid(row=0, column=1, padx=5)
+                RefNo_combo.current(0)
+        # --------------------------------------------------
+
+                LabelCompanyName = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Company Name:", padx=2,pady=6)
+                LabelCompanyName.grid(row=1,column=0,sticky=W)
+                txtCompanyName = Entry(DataFrameLeft,textvariable=self.companyName_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtCompanyName.grid(row=1,column=1,padx=5)
+
+                TypeOfMedicine = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Type Of Medicine:", padx=2,pady=6)
+                TypeOfMedicine.grid(row=2,column=0,sticky=W)
+
+                comTypeOfMedicine=ttk.Combobox(DataFrameLeft,textvariable=self.TypeMed_Variable, state="readonly", font = ("Arial", 12, "bold"), width=17)
+
+                comTypeOfMedicine['values'] = ("Tablet", "Liquid", "Capsules", "Topical Medicines","Drops","Inahalers","Injections")
+                comTypeOfMedicine.current(0)
+                comTypeOfMedicine.grid(row=2,column=1)
+
+                #AddMedicine------------------------------------------
+                labelMedName =Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Medicine:", padx=2,pady=6)
+                labelMedName.grid(row=3,column=0,sticky=W)
+                
+        # -------------databse query for combobox--------------
+                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                my_cursor = conn.cursor()
+                my_cursor.execute("select medName from pharma")
+                meds = my_cursor.fetchall()
+
+                lblMedName = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Medicine Name :", padx=2,pady=6)
+                lblMedName.grid(row=3,column=0,sticky=W)
+                comMedname =ttk.Combobox(DataFrameLeft,textvariable=self.medName_var, width=15, font=("Arial", 14), state="readonly")
+                comMedname["values"] = meds
+                comMedname.current(0)
+                comMedname.grid(row= 3, column=1)
+        # -----------------------------------------------------
+
+                LabelLotno = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Lot No. :", padx=2,pady=6)
+                LabelLotno.grid(row=4,column=0,sticky=W)
+                txtLotno = Entry(DataFrameLeft,textvariable=self.LotNo_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtLotno.grid(row=4,column=1,padx=5)
+
+                LabelIssueDate = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Issue Date:", padx=2,pady=6)
+                LabelIssueDate.grid(row=5,column=0,sticky=W)
+                txtIssueDate = Entry(DataFrameLeft,textvariable=self.IssueDate_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtIssueDate.grid(row=5,column=1,padx=5)
+
+                LabelExpiryDate = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Expiry Date:", padx=2,pady=6)
+                LabelExpiryDate.grid(row=6,column=0,sticky=W)
+                txtExpiryDate = Entry(DataFrameLeft,textvariable=self.ExpDate_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtExpiryDate.grid(row=6,column=1,padx=5)
+
+                LabelUses = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Uses:", padx=2,pady=4)
+                LabelUses.grid(row=7,column=0,sticky=W)
+                txtuses= Entry(DataFrameLeft,textvariable=self.uses_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtuses.grid(row=7,column=1,padx=5)
+
+                LabelSideEffect = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Side Effects:", padx=2,pady=4)
+                LabelSideEffect.grid(row=8,column=0,sticky=W)
+                txtsideeffect= Entry(DataFrameLeft,textvariable=self.SideEffect_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtsideeffect.grid(row=8,column=1,padx=5)
+
+                LabelPrecaution= Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Pre-caution:", padx=15,pady=4)
+                LabelPrecaution.grid(row=0,column=2,sticky=W)
+                txtprecaution= Entry(DataFrameLeft,textvariable=self.Warning_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtprecaution.grid(row=0,column=3,padx=5)
+
+                LabelDosage= Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Dosage:", padx=15,pady=4)
+                LabelDosage.grid(row=1,column=2,sticky=W)
+                txtDosage= Entry(DataFrameLeft,textvariable=self.Dosage_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtDosage.grid(row=1,column=3,padx=5)
+
+                LabelPrice= Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Price:", padx=15,pady=4)
+                LabelPrice.grid(row=2,column=2,sticky=W)
+                txtPrice= Entry(DataFrameLeft,textvariable=self.Price_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtPrice.grid(row=2,column=3,padx=5)
+
+                LabelProductQty= Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Quantity:", padx=15,pady=4)
+                LabelProductQty.grid(row=3,column=2,sticky=W)
+                txtProductQty= Entry(DataFrameLeft,textvariable=self.Quantity_Variable,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtProductQty.grid(row=3,column=3,padx=5,sticky=W)
+
+                #images -------------------------------------------------------
+                LabelHOME= Label(DataFrameLeft,width=25, bg="#FFB90F",font = ("Arial", 12, "bold"),text = "STAY SAFE . STAY HEALTHY", padx=15,pady=4)
+                LabelHOME.place(x =480, y = 150 )
+
+
+                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg"  
+                img2 = Image.open(image_path)
+                img2 = img2.resize((120,  120))
+                self.photoimg2 = ImageTk.PhotoImage(img2)
+                button2 = Button(self.root, image=self.photoimg2, borderwidth=0)
+                button2.place(x=500, y=350)
+
+                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg"  
+                img3 = Image.open(image_path)
+                img3 = img3.resize((120,  120))
+                self.photoimg3 = ImageTk.PhotoImage(img3)
+                button3 = Button(self.root, image=self.photoimg3, borderwidth=0)
+                button3.place(x=625, y=350)
+
+                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg" 
+                img4 = Image.open(image_path)
+                img4 = img4.resize((120,  120))
+                self.photoimg4 = ImageTk.PhotoImage(img4)
+                button4 = Button(self.root, image=self.photoimg4, borderwidth=0)
+                button4.place(x=750, y=350)
+
+        # ---------------------------------------------- DataFrameRight---------------------------
+                # medicine information right side column
+                DataFrameRight = LabelFrame(DataFrame,bd=10,relief=RIDGE,padx=20,text="Medicine Add Department",
+                                        fg="darkblue",bg= "#F8F8FF",font=("Times New Romanl", 15, "bold"))
+                DataFrameRight.place(x=890,y=5,width=593, height= 350)
+
+                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg"  
+                img5 = Image.open(image_path)
+                img5 = img5.resize((120,  60))
+                self.photoimg5 = ImageTk.PhotoImage(img5)
+                button5 = Button(self.root, image=self.photoimg5, borderwidth=0)
+                button5.place(x=940, y=165)
+
+
+                LabelRefnumber= Label(DataFrameRight,width=12, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Reference Number:", padx=15,pady=4)
+                LabelRefnumber.place(x =0, y = 80,anchor='nw')
+                txtRefnumber= Entry(DataFrameRight,textvariable = self.addref_Var,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtRefnumber.place(x = 172, y = 80)
+
+                LabelMedicineName= Label(DataFrameRight,width=12, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Medicine Name:", padx=15,pady=4)
+                LabelMedicineName.place(x =0, y = 111,anchor='nw')
+                txtMedicineName= Entry(DataFrameRight,textvariable = self.addmed_var,font=("Arial", 13,"bold"),bg="white",bd=2,relief=RIDGE,width=22)
+                txtMedicineName.place(x = 172, y = 111)
+
+        # ----------------------------------SIDE FRAME---------------------------
+                side_frame = Frame(DataFrameRight,bd=3, relief=RIDGE, bg= "white")
+                side_frame.place(x=0,y=146,width = 290, height= 162)
+
+                #scroolbar making
+                sc_x=ttk.Scrollbar(side_frame,orient = HORIZONTAL)
+                sc_x.pack(side=BOTTOM,fill=X)
+                sc_y=ttk.Scrollbar(side_frame,orient = VERTICAL)
+                sc_y.pack(side=RIGHT,fill=Y)
+
+                #Treeview
+                self.medicine_table = ttk.Treeview(side_frame,column=("ref","MedName"),xscrollcommand=sc_x.set,yscrollcommand=sc_y.set)
+
+                sc_x.config(command= self.medicine_table.xview)
+                sc_y.config(command=self.medicine_table.yview)
+                # -----------giving heading in table------------
+                self.medicine_table.heading("ref", text="Reference")
+                self.medicine_table.heading("MedName", text="Medicine Name")
+
+                self.medicine_table["show"]="headings" #to show heAding
+                self.medicine_table.pack(fill= BOTH, expand = 1)
+
+                #to set width
+                self.medicine_table.column("ref", width=100)
+                self.medicine_table.column("MedName", width=100)
+
+                self.medicine_table.bind("<ButtonRelease-1>", self.medget_cursor)
+
+
+                #creaated a frame for adding button
+                down_frame = Frame(DataFrameRight, bd=4, relief=RIDGE, bg="#C1FFC1")
+                down_frame.place(x=330, y=146, width=137, height=162)
+
+        
+        # Define the buttons with commands
+                buttons = [
+                {"text": "ADD", "color": "#007bff", "active_color": "#00B2EE", "command": self.addmed},
+                {"text": "Update", "color": "#6495ED", "active_color": "#7AC5CD", "command": self.update_med},  # Define command if needed
+                {"text": "Delete", "color": "#DC143C", "active_color": "#CD5B45", "command": self.delete_med},  # Define command if needed
+                {"text": "Clear", "color": "#A2CD5A", "active_color": "#6E8B3D", "command": self.clear_med}  # Define command if needed
+                ]
+
+                # Create buttons in a loop
+                for i, button in enumerate(buttons):
+                        btn = Button(down_frame, text=button["text"], font=("Open Sans", 14, "bold"), width=10,
+                                        fg="white", bg=button["color"], activebackground=button["active_color"], activeforeground="white",
+                                        command=button["command"])  # Assign command here
+                        btn.grid(row=i, column=0)  # Add padding between buttons
+
+                # -------------------Frame Details----------------
+                Framedetails=Frame(self.root,bd=9, relief=RIDGE, bg="#FFEBCD")
+                Framedetails.place(x=0, y=590, width=1535, height=201)
+
+                #TABLE 
+                tableframe=Frame(Framedetails,bd=10, bg="#B0E2FF")
+                tableframe.place(x=0, y=1, width=1500, height=170)
+                #scroolbar making
+                Scroll_x=ttk.Scrollbar(Framedetails,orient = HORIZONTAL)
+                Scroll_x.pack(side=BOTTOM,fill=X)
+                Scroll_y=ttk.Scrollbar(Framedetails,orient = VERTICAL)
+                Scroll_y.pack(side=RIGHT,fill=Y)
+
+                #treeview
+                self.databaseNameDatatable=ttk.Treeview(tableframe,column=("reg","companyname","Type","tabletname","lotno",
+                                                                "issuedate","expdate","uses","sideeffect","warning","dosage","price","quantity"),xscrollcommand=Scroll_x.set,yscrollcommand=Scroll_y.set)
+                Scroll_x.pack(side=BOTTOM,fill=X)
+                Scroll_y.pack(side=RIGHT,fill=Y)
+
+                Scroll_x.config(command=self.databaseNameDatatable.xview)
+                Scroll_y.config(command=self.databaseNameDatatable.yview)
+
+                self.databaseNameDatatable["show"] = "headings"
+
+                
+                
+                self.databaseNameDatatable.heading("reg", text="Reference No.")
+                self.databaseNameDatatable.heading("companyname", text="Company Name")
+                self.databaseNameDatatable.heading("Type", text="Type Of Medicine")
+                self.databaseNameDatatable.heading("tabletname", text="Tablet Name")
+                self.databaseNameDatatable.heading("lotno", text="Lot No.")
+                self.databaseNameDatatable.heading("issuedate", text="Issue Date")
+                self.databaseNameDatatable.heading("expdate", text="Expiry Date")
+                self.databaseNameDatatable.heading("uses", text="Uses")
+                self.databaseNameDatatable.heading("sideeffect", text="Side Effect")
+                self.databaseNameDatatable.heading("warning", text="Warning")
+                self.databaseNameDatatable.heading("dosage", text="Dosage")
+                self.databaseNameDatatable.heading("price", text="Price")
+                self.databaseNameDatatable.heading("quantity", text="Quantity")
+                self.databaseNameDatatable.pack(fill=BOTH, expand=1)
+
+                self.databaseNameDatatable.column("reg",width=89)
+                self.databaseNameDatatable.column("companyname",width=150)
+                self.databaseNameDatatable.column("Type",width=140)
+                self.databaseNameDatatable.column("tabletname",width=150)
+                self.databaseNameDatatable.column("lotno",width=140)
+                self.databaseNameDatatable.column("issuedate",width=89)
+                self.databaseNameDatatable.column("expdate",width=89)
+                self.databaseNameDatatable.column("uses",width=150)
+                self.databaseNameDatatable.column("sideeffect",width=140)
+                self.databaseNameDatatable.column("warning",width=140)
+                self.databaseNameDatatable.column("dosage",width=89)
+                self.databaseNameDatatable.column("price",width=89)
+                self.databaseNameDatatable.column("quantity",width=89)
+                self.fetch_dataMed()
+                self.fetch_data()
+                self.databaseNameDatatable.bind("<ButtonRelease-1>",self.get_cursor)
+                
+
+#database------------------------------------database-------------------------database-------------------------database------------------database-----------------------
+
+# -----functionality declaration -----------
+
+        def addmed(self):
+                
+                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                my_cursor = conn.cursor()
+                my_cursor.execute("INSERT INTO pharma (ref, medName) VALUES (%s, %s)", (
+                        self.addref_Var.get(),
+                                self.addmed_var.get()
+                ))
+                conn.commit()
+                self.fetch_dataMed()
+                self.medget_cursor()
+                conn.close()
+                messagebox.showinfo("Success", "Successfully added")
+
+
+        def fetch_dataMed(self):
+                
+                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                my_cursor = conn.cursor()
+                my_cursor.execute("select * from pharma")
+                rows = my_cursor.fetchall()
+                if len(rows) != 0:
+                        self.medicine_table.delete(*self.medicine_table.get_children())
+                        for i in rows:
+                                self.medicine_table.insert("", END, values = i)
+                        conn.commit()
+                conn.close()
+
+        # -----------------med getcursor----------------
+        def medget_cursor(self, event=""):
+        # Get the selected item from the Treeview
+                cursor_row = self.medicine_table.focus()
+                content = self.medicine_table.item(cursor_row)
+                row = content['values']
+
+                # Set the retrieved values into the corresponding Entry widgets
+                self.addref_Var.set(row[0])  # Assuming ref number is in the first column
+                self.addmed_var.set(row[1])  # Assuming medicine name is in the second column
+# --------------------------------------------------------------------
+
+        def update_med(self):
+                if self.addref_Var.get() == "" or self.addmed_var.get() == "":
+                        messagebox.showerror("Error", "All fields are required")
+
+                else:
+                        conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                        my_cursor = conn.cursor()
+                        my_cursor.execute("update pharma set medName = %s where ref = %s",(
+                                                                                self.addmed_var.get(),
+                                                                                self.addref_Var.get()
+                                                                                ))
+                        conn.commit()
+                        self.fetch_dataMed()
+                        conn.close()
+
+                        messagebox.showinfo("success", "medicine updated")
+
+        def delete_med(self):
+                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                my_cursor = conn.cursor()
+                
+                sql = "delete from pharma where ref =%s "
+                val = (self.addref_Var.get(),)
+                my_cursor.execute(sql, val)
+                conn.commit()
+                self.fetch_dataMed()
+                conn.close()
+
+        def clear_med(self):
+                self.addref_Var.set("")
+                self.addmed_var.set("")
+
+# --------------------------main table functioning --------------------------
+
+
+        def add_data(self):
+                try:
+                        conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                        my_cursor = conn.cursor()
+
+                        # Get data from entry fields
+                        ref_no = self.RefNo_Variable.get()
+                        company_name = self.companyName_Variable.get()
+                        type_med = self.TypeMed_Variable.get()
+                        med_name = self.medName_var.get()
+                        lot_no = self.LotNo_Variable.get()
+                        issue_date = self.IssueDate_Variable.get()
+                        exp_date = self.ExpDate_Variable.get()
+                        uses = self.uses_Variable.get()
+                        side_effect = self.SideEffect_Variable.get()
+                        warning = self.Warning_Variable.get()
+                        dosage = self.Dosage_Variable.get()
+                        price = self.Price_Variable.get()
+                        qty = self.Quantity_Variable.get()
+
+                # Basic data validation
+                        if not all([ref_no, company_name, type_med, med_name, lot_no, issue_date, exp_date, uses, side_effect, warning, dosage, price, qty]):
+                                messagebox.showerror("Error", "Please fill all required fields")
+                                return
+
+                        # Insert data into the database
+                        sql = "INSERT INTO databaseNamey (RefNo, companyName, TypeMed, medName, LotNo, IssueDate, ExpDate, Uses, SideEffect, Warning, Dosage, Price, Quantity) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                        values = (ref_no, company_name, type_med, med_name, lot_no, issue_date, exp_date, uses, side_effect, warning, dosage, price, qty)
+                        my_cursor.execute(sql, values)
+                        conn.commit()
+
+                        # Clear entry fields (optional)
+                        self.RefNo_Variable.set("")
+                        self.companyName_Variable.set("")
+                        # ... (clear other fields)
+
+                        self.fetch_data()
+                        messagebox.showinfo("Success", "Medicine added successfully!")
+                except mysql.connector.Error as err:
+                        if err.errno == 1062:  # Duplicate entry error (adjust error code as needed)
+                                messagebox.showerror("Error", "Medicine already exists")
+                        else:
+                                messagebox.showerror("Error", f"Error adding medicine: {err}")
+                finally:
+                        conn.close()
+
+        
+        def fetch_data(self):
+                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                my_cursor = conn.cursor()
+                my_cursor.execute("select * from databaseNamey")
+                rows = my_cursor.fetchall()
+                if len(rows) != 0:
+                        self.databaseNameDatatable.delete(*self.databaseNameDatatable.get_children())
+                        for i in rows:
+                                self.databaseNameDatatable.insert("", END, values=i)
+                conn.commit()
+                conn.close()
+        
+        def get_cursor(self,ev=""):
+                cursor_row = self.databaseNameDatatable.focus()
+                content = self.databaseNameDatatable.item(cursor_row)
+                row = content["values"]  # Assuming you're using fetchall()
+
+                # Print each row to see its structure and contents
+                self.RefNo_Variable.set(row[0]),  # Assuming ref number is in the first column
+                self.companyName_Variable.set(row[1]),  # Assuming medicine name is in the second column
+                self.TypeMed_Variable.set(row[2]),
+                self.medName_var.set(row[3]),
+                self.LotNo_Variable.set(row[4]),
+                self.IssueDate_Variable.set(row[5]),
+                self.ExpDate_Variable.set(row[6]),
+                self.uses_Variable.set(row[7]),
+                self.SideEffect_Variable.set(row[8]),
+                self.Warning_Variable.set(row[9]),
+                self.Dosage_Variable.set(row[10]),
+                self.Price_Variable.set(row[11]),
+                self.Quantity_Variable.set(row[12])
+        
+        def Update(self):
+                if self.RefNo_Variable.get() == "":
+                        messagebox.showerror("Error", "All fields are required")
+
+                else:
+                        conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                        my_cursor = conn.cursor()
+                        my_cursor.execute("update databaseNamey set companyName = %s,TypeMed = %s,MedName = %s,LotNo = %s,IssueDate = %s,ExpDate = %s,Uses = %s,SideEffect = %s,Warning = %s,Dosage = %s,Price = %s,Quantity = %s where RefNo = %s ",(
+                                                                                                                                                                                                                                                self.companyName_Variable.get(),
+                                                                                                                                                                                                                                                self.TypeMed_Variable.get(),
+                                                                                                                                                                                                                                                self.medName_var.get(),
+                                                                                                                                                                                                                                                self.LotNo_Variable.get(),
+                                                                                                                                                                                                                                                self.IssueDate_Variable.get(),
+                                                                                                                                                                                                                                                self.ExpDate_Variable.get(),
+                                                                                                                                                                                                                                                self.uses_Variable.get(),
+                                                                                                                                                                                                                                                self.SideEffect_Variable.get(),
+                                                                                                                                                                                                                                                self.Warning_Variable.get(),
+                                                                                                                                                                                                                                                self.Dosage_Variable.get(),
+                                                                                                                                                                                                                                                self.Price_Variable.get(),
+                                                                                                                                                                                                                                                self.Quantity_Variable.get(),
+                                                                                                                                                                                                                                                self.RefNo_Variable.get()
+                                                                                                                                                                                                                                                ))
+                        conn.commit()
+                        self.fetch_data()
+                        conn.close()
+
+                        messagebox.showinfo("UPDATE", " Updated Successfully")
+        def delete(self):
+                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                my_cursor = conn.cursor()
+                
+                sql = "delete from databaseNamey where RefNo =%s "
+                val = (self.RefNo_Variable.get(),)
+                my_cursor.execute(sql, val)
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+
+                messagebox("DELETE","Deleted Successfully" )
+
+        def reset(self):
+                # self.RefNo_Variable.set(""),  # Assuming ref number is in the first column
+                self.companyName_Variable.set(""),  # Assuming medicine name is in the second column
+                # self.TypeMed_Variable.set(""),
+                # self.medName_var.set(""),
+                self.LotNo_Variable.set(""),
+                self.IssueDate_Variable.set(""),
+                self.ExpDate_Variable.set(""),
+                self.uses_Variable.set(""),
+                self.SideEffect_Variable.set(""),
+                self.Warning_Variable.set(""),
+                self.Dosage_Variable.set(""),
+                self.Price_Variable.set(""),
+                self.Quantity_Variable.set("")
+
+        def search_data(self):
+                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                my_cursor = conn.cursor()
+                my_cursor.execute("select * from databaseNamey where " + str(self.search_var.get()) + " LIKE '%" + str(self.searchtxt_var.get()) + "%'")
+
+                rows = my_cursor.fetchall()
+                if len(rows) != 0:
+                        self.databaseNameDatatable.delete(*self.databaseNameDatatable.get_children())
+                        for i in rows:
+                                self.databaseNameDatatable.insert("",END, values = i)
+                        conn.commit()
+                conn.close()
+        
+                
+# -----------------------------------------------------------------------------
+if __name__ == "__main__":
+    root = Tk()
+    obj = databaseName_ManagementSystem(root)
+    root.mainloop()
