@@ -5,11 +5,13 @@ import mysql.connector
 from tkinter import messagebox
 
 
-class databaseName_ManagementSystem:
+class pharmacy_ManagementSystem:
         def __init__(self, root):
                 self.root = root 
-                self.root.title("databaseName Management System")
+                self.root.title("Pharmacy Management System")
                 self.root.geometry("1560x800+0+0")
+        
+        
         
         #   ------------variable for databse addmed()------------
                 self.addmed_var=StringVar()
@@ -31,13 +33,16 @@ class databaseName_ManagementSystem:
                 self.Quantity_Variable = StringVar()
 
 
-                label_title = Label(self.root, text="databaseName MANAGEMENT SYSTEM", bd=8, relief=RAISED,
+
+
+
+                label_title = Label(self.root, text="PHARMACY MANAGEMENT SYSTEM", bd=8, relief=RAISED,
                                 bg="#FAFAD2", fg="darkgreen", font=("Arial", 50, "bold"), padx=2, pady=4)
                 label_title.pack(side="top", fill=X)
 
                 
                 #adding first image as button
-                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg"  
+                image_path = "pharmacy-symbol-isolated-M5R8AD.jpg"  
                 img1 = Image.open(image_path)
                 img1 = img1.resize((80, 80))
                 self.photoimg1 = ImageTk.PhotoImage(img1)
@@ -59,6 +64,8 @@ class databaseName_ManagementSystem:
                 #Button Frames
                 buttonFrame = Frame(self.root,bd=10,relief=RIDGE,padx=20)
                 buttonFrame.place(x=0,y=520,width=1538, height= 65)
+
+                
 
                 # main button 
                 buttonAddData = Button(buttonFrame,command=self.add_data,text = "ADD MEDICINE", font=("Arial", 14, "bold"),width=12,
@@ -117,7 +124,7 @@ class databaseName_ManagementSystem:
 
 
         # -------------databse query for refcombobox--------------
-                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                 my_cursor = conn.cursor()
                 my_cursor.execute("select ref from pharma")
                 rows = my_cursor.fetchall()
@@ -127,6 +134,7 @@ class databaseName_ManagementSystem:
                 RefNo_combo.grid(row=0, column=1, padx=5)
                 RefNo_combo.current(0)
         # --------------------------------------------------
+
 
                 LabelCompanyName = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Company Name:", padx=2,pady=6)
                 LabelCompanyName.grid(row=1,column=0,sticky=W)
@@ -147,7 +155,7 @@ class databaseName_ManagementSystem:
                 labelMedName.grid(row=3,column=0,sticky=W)
                 
         # -------------databse query for combobox--------------
-                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                 my_cursor = conn.cursor()
                 my_cursor.execute("select medName from pharma")
                 meds = my_cursor.fetchall()
@@ -159,6 +167,7 @@ class databaseName_ManagementSystem:
                 comMedname.current(0)
                 comMedname.grid(row= 3, column=1)
         # -----------------------------------------------------
+
 
                 LabelLotno = Label(DataFrameLeft,width=17, bg="#F8F8FF",font = ("Arial", 12, "bold"),text = "Lot No. :", padx=2,pady=6)
                 LabelLotno.grid(row=4,column=0,sticky=W)
@@ -210,21 +219,21 @@ class databaseName_ManagementSystem:
                 LabelHOME.place(x =480, y = 150 )
 
 
-                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg"  
+                image_path = "pharmacy-symbol-isolated-M5R8AD.jpg"  
                 img2 = Image.open(image_path)
                 img2 = img2.resize((120,  120))
                 self.photoimg2 = ImageTk.PhotoImage(img2)
                 button2 = Button(self.root, image=self.photoimg2, borderwidth=0)
                 button2.place(x=500, y=350)
 
-                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg"  
+                image_path = "pharmacy-symbol-isolated-M5R8AD.jpg"  
                 img3 = Image.open(image_path)
                 img3 = img3.resize((120,  120))
                 self.photoimg3 = ImageTk.PhotoImage(img3)
                 button3 = Button(self.root, image=self.photoimg3, borderwidth=0)
                 button3.place(x=625, y=350)
 
-                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg" 
+                image_path = "pharmacy-symbol-isolated-M5R8AD.jpg" 
                 img4 = Image.open(image_path)
                 img4 = img4.resize((120,  120))
                 self.photoimg4 = ImageTk.PhotoImage(img4)
@@ -237,7 +246,7 @@ class databaseName_ManagementSystem:
                                         fg="darkblue",bg= "#F8F8FF",font=("Times New Romanl", 15, "bold"))
                 DataFrameRight.place(x=890,y=5,width=593, height= 350)
 
-                image_path = "databaseName project Tkinter/databaseName-symbol-isolated-M5R8AD.jpg"  
+                image_path = "pharmacy-symbol-isolated-M5R8AD.jpg"  
                 img5 = Image.open(image_path)
                 img5 = img5.resize((120,  60))
                 self.photoimg5 = ImageTk.PhotoImage(img5)
@@ -318,49 +327,49 @@ class databaseName_ManagementSystem:
                 Scroll_y.pack(side=RIGHT,fill=Y)
 
                 #treeview
-                self.databaseNameDatatable=ttk.Treeview(tableframe,column=("reg","companyname","Type","tabletname","lotno",
+                self.pharmacyDatatable=ttk.Treeview(tableframe,column=("reg","companyname","Type","tabletname","lotno",
                                                                 "issuedate","expdate","uses","sideeffect","warning","dosage","price","quantity"),xscrollcommand=Scroll_x.set,yscrollcommand=Scroll_y.set)
                 Scroll_x.pack(side=BOTTOM,fill=X)
                 Scroll_y.pack(side=RIGHT,fill=Y)
 
-                Scroll_x.config(command=self.databaseNameDatatable.xview)
-                Scroll_y.config(command=self.databaseNameDatatable.yview)
+                Scroll_x.config(command=self.pharmacyDatatable.xview)
+                Scroll_y.config(command=self.pharmacyDatatable.yview)
 
-                self.databaseNameDatatable["show"] = "headings"
+                self.pharmacyDatatable["show"] = "headings"
 
                 
                 
-                self.databaseNameDatatable.heading("reg", text="Reference No.")
-                self.databaseNameDatatable.heading("companyname", text="Company Name")
-                self.databaseNameDatatable.heading("Type", text="Type Of Medicine")
-                self.databaseNameDatatable.heading("tabletname", text="Tablet Name")
-                self.databaseNameDatatable.heading("lotno", text="Lot No.")
-                self.databaseNameDatatable.heading("issuedate", text="Issue Date")
-                self.databaseNameDatatable.heading("expdate", text="Expiry Date")
-                self.databaseNameDatatable.heading("uses", text="Uses")
-                self.databaseNameDatatable.heading("sideeffect", text="Side Effect")
-                self.databaseNameDatatable.heading("warning", text="Warning")
-                self.databaseNameDatatable.heading("dosage", text="Dosage")
-                self.databaseNameDatatable.heading("price", text="Price")
-                self.databaseNameDatatable.heading("quantity", text="Quantity")
-                self.databaseNameDatatable.pack(fill=BOTH, expand=1)
+                self.pharmacyDatatable.heading("reg", text="Reference No.")
+                self.pharmacyDatatable.heading("companyname", text="Company Name")
+                self.pharmacyDatatable.heading("Type", text="Type Of Medicine")
+                self.pharmacyDatatable.heading("tabletname", text="Tablet Name")
+                self.pharmacyDatatable.heading("lotno", text="Lot No.")
+                self.pharmacyDatatable.heading("issuedate", text="Issue Date")
+                self.pharmacyDatatable.heading("expdate", text="Expiry Date")
+                self.pharmacyDatatable.heading("uses", text="Uses")
+                self.pharmacyDatatable.heading("sideeffect", text="Side Effect")
+                self.pharmacyDatatable.heading("warning", text="Warning")
+                self.pharmacyDatatable.heading("dosage", text="Dosage")
+                self.pharmacyDatatable.heading("price", text="Price")
+                self.pharmacyDatatable.heading("quantity", text="Quantity")
+                self.pharmacyDatatable.pack(fill=BOTH, expand=1)
 
-                self.databaseNameDatatable.column("reg",width=89)
-                self.databaseNameDatatable.column("companyname",width=150)
-                self.databaseNameDatatable.column("Type",width=140)
-                self.databaseNameDatatable.column("tabletname",width=150)
-                self.databaseNameDatatable.column("lotno",width=140)
-                self.databaseNameDatatable.column("issuedate",width=89)
-                self.databaseNameDatatable.column("expdate",width=89)
-                self.databaseNameDatatable.column("uses",width=150)
-                self.databaseNameDatatable.column("sideeffect",width=140)
-                self.databaseNameDatatable.column("warning",width=140)
-                self.databaseNameDatatable.column("dosage",width=89)
-                self.databaseNameDatatable.column("price",width=89)
-                self.databaseNameDatatable.column("quantity",width=89)
+                self.pharmacyDatatable.column("reg",width=89)
+                self.pharmacyDatatable.column("companyname",width=150)
+                self.pharmacyDatatable.column("Type",width=140)
+                self.pharmacyDatatable.column("tabletname",width=150)
+                self.pharmacyDatatable.column("lotno",width=140)
+                self.pharmacyDatatable.column("issuedate",width=89)
+                self.pharmacyDatatable.column("expdate",width=89)
+                self.pharmacyDatatable.column("uses",width=150)
+                self.pharmacyDatatable.column("sideeffect",width=140)
+                self.pharmacyDatatable.column("warning",width=140)
+                self.pharmacyDatatable.column("dosage",width=89)
+                self.pharmacyDatatable.column("price",width=89)
+                self.pharmacyDatatable.column("quantity",width=89)
                 self.fetch_dataMed()
                 self.fetch_data()
-                self.databaseNameDatatable.bind("<ButtonRelease-1>",self.get_cursor)
+                self.pharmacyDatatable.bind("<ButtonRelease-1>",self.get_cursor)
                 
 
 #database------------------------------------database-------------------------database-------------------------database------------------database-----------------------
@@ -369,7 +378,7 @@ class databaseName_ManagementSystem:
 
         def addmed(self):
                 
-                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                 my_cursor = conn.cursor()
                 my_cursor.execute("INSERT INTO pharma (ref, medName) VALUES (%s, %s)", (
                         self.addref_Var.get(),
@@ -384,7 +393,7 @@ class databaseName_ManagementSystem:
 
         def fetch_dataMed(self):
                 
-                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                 my_cursor = conn.cursor()
                 my_cursor.execute("select * from pharma")
                 rows = my_cursor.fetchall()
@@ -412,7 +421,7 @@ class databaseName_ManagementSystem:
                         messagebox.showerror("Error", "All fields are required")
 
                 else:
-                        conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                        conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                         my_cursor = conn.cursor()
                         my_cursor.execute("update pharma set medName = %s where ref = %s",(
                                                                                 self.addmed_var.get(),
@@ -425,7 +434,7 @@ class databaseName_ManagementSystem:
                         messagebox.showinfo("success", "medicine updated")
 
         def delete_med(self):
-                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                 my_cursor = conn.cursor()
                 
                 sql = "delete from pharma where ref =%s "
@@ -444,7 +453,7 @@ class databaseName_ManagementSystem:
 
         def add_data(self):
                 try:
-                        conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                        conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                         my_cursor = conn.cursor()
 
                         # Get data from entry fields
@@ -468,7 +477,7 @@ class databaseName_ManagementSystem:
                                 return
 
                         # Insert data into the database
-                        sql = "INSERT INTO databaseNamey (RefNo, companyName, TypeMed, medName, LotNo, IssueDate, ExpDate, Uses, SideEffect, Warning, Dosage, Price, Quantity) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                        sql = "INSERT INTO pharmacyy (RefNo, companyName, TypeMed, medName, LotNo, IssueDate, ExpDate, Uses, SideEffect, Warning, Dosage, Price, Quantity) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
                         values = (ref_no, company_name, type_med, med_name, lot_no, issue_date, exp_date, uses, side_effect, warning, dosage, price, qty)
                         my_cursor.execute(sql, values)
                         conn.commit()
@@ -490,20 +499,20 @@ class databaseName_ManagementSystem:
 
         
         def fetch_data(self):
-                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                 my_cursor = conn.cursor()
-                my_cursor.execute("select * from databaseNamey")
+                my_cursor.execute("select * from pharmacyy")
                 rows = my_cursor.fetchall()
                 if len(rows) != 0:
-                        self.databaseNameDatatable.delete(*self.databaseNameDatatable.get_children())
+                        self.pharmacyDatatable.delete(*self.pharmacyDatatable.get_children())
                         for i in rows:
-                                self.databaseNameDatatable.insert("", END, values=i)
+                                self.pharmacyDatatable.insert("", END, values=i)
                 conn.commit()
                 conn.close()
         
         def get_cursor(self,ev=""):
-                cursor_row = self.databaseNameDatatable.focus()
-                content = self.databaseNameDatatable.item(cursor_row)
+                cursor_row = self.pharmacyDatatable.focus()
+                content = self.pharmacyDatatable.item(cursor_row)
                 row = content["values"]  # Assuming you're using fetchall()
 
                 # Print each row to see its structure and contents
@@ -526,9 +535,9 @@ class databaseName_ManagementSystem:
                         messagebox.showerror("Error", "All fields are required")
 
                 else:
-                        conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                        conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                         my_cursor = conn.cursor()
-                        my_cursor.execute("update databaseNamey set companyName = %s,TypeMed = %s,MedName = %s,LotNo = %s,IssueDate = %s,ExpDate = %s,Uses = %s,SideEffect = %s,Warning = %s,Dosage = %s,Price = %s,Quantity = %s where RefNo = %s ",(
+                        my_cursor.execute("update pharmacyy set companyName = %s,TypeMed = %s,MedName = %s,LotNo = %s,IssueDate = %s,ExpDate = %s,Uses = %s,SideEffect = %s,Warning = %s,Dosage = %s,Price = %s,Quantity = %s where RefNo = %s ",(
                                                                                                                                                                                                                                                 self.companyName_Variable.get(),
                                                                                                                                                                                                                                                 self.TypeMed_Variable.get(),
                                                                                                                                                                                                                                                 self.medName_var.get(),
@@ -549,10 +558,10 @@ class databaseName_ManagementSystem:
 
                         messagebox.showinfo("UPDATE", " Updated Successfully")
         def delete(self):
-                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                 my_cursor = conn.cursor()
                 
-                sql = "delete from databaseNamey where RefNo =%s "
+                sql = "delete from pharmacyy where RefNo =%s "
                 val = (self.RefNo_Variable.get(),)
                 my_cursor.execute(sql, val)
                 conn.commit()
@@ -577,15 +586,15 @@ class databaseName_ManagementSystem:
                 self.Quantity_Variable.set("")
 
         def search_data(self):
-                conn = mysql.connector.connect(host="localhost", username="root", password="password", database="databaseName")
+                conn = mysql.connector.connect(host="localhost", username="root", password="pswd", database="pharmacy")
                 my_cursor = conn.cursor()
-                my_cursor.execute("select * from databaseNamey where " + str(self.search_var.get()) + " LIKE '%" + str(self.searchtxt_var.get()) + "%'")
+                my_cursor.execute("select * from pharmacyy where " + str(self.search_var.get()) + " LIKE '%" + str(self.searchtxt_var.get()) + "%'")
 
                 rows = my_cursor.fetchall()
                 if len(rows) != 0:
-                        self.databaseNameDatatable.delete(*self.databaseNameDatatable.get_children())
+                        self.pharmacyDatatable.delete(*self.pharmacyDatatable.get_children())
                         for i in rows:
-                                self.databaseNameDatatable.insert("",END, values = i)
+                                self.pharmacyDatatable.insert("",END, values = i)
                         conn.commit()
                 conn.close()
         
@@ -593,5 +602,5 @@ class databaseName_ManagementSystem:
 # -----------------------------------------------------------------------------
 if __name__ == "__main__":
     root = Tk()
-    obj = databaseName_ManagementSystem(root)
+    obj = pharmacy_ManagementSystem(root)
     root.mainloop()
